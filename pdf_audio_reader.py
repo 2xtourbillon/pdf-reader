@@ -16,6 +16,39 @@ def extract_text():
             text_extracted += pageObject.extractText()
         file.close()
 
+def speak_text():
+    """Making the engine speak"""
+    global rate, male, female
+
+    # apply the rate
+    rate = int(rate.get())
+    engine.setProperty('rate', rate)
+
+    # get the male/female vars
+    male = int(male.get())
+    female = int(female.get())
+
+    # get voice
+    all_voices = engine.getProperty('voices')
+    maleVoice = all_voices[0].id
+    femaleVoice = all_voices[1].id
+
+    # check the voices
+    if (male == 0 and female == 0) or (male == 1 and female == 1):
+        engine.setProperty('voice', maleVoice)
+    elif male == 0 and female == 1:
+        engine.setProperty('voice', femaleVoice)
+    else:
+        engine.setProperty('voice', maleVoice)
+
+    # let the engine speak
+    engine.say(text_extracted)
+    engine.runAndWait()
+
+def stop_speaking():
+    """stop engine from speaking"""
+    engine.stop()
+
 def Application(root):
     
     root.geometry('{}x{}'.format(700, 600)) # 700 x 600 window
@@ -37,8 +70,8 @@ def Application(root):
     name2.pack()
 
     #frame2 widgets (btns, checkboxes)
-    btn = Button(frame2, text='Select PDF File', activeforeground='red', \
-         padx=70, pady='10', fg='white', bg='black', font=('Arial 12 bold')) # command=extract_text(),
+    btn = Button(frame2, text='Select PDF File', activeforeground='red', command=extract_text, \
+         padx=70, pady='10', fg='white', bg='black', font=('Arial 12 bold'))
     btn.grid(row=0, pady=20, columnspan=2)
     
     rate_text = Label(frame2, text='Enter Rate of Speech', fg='black', bg='aqua',\
@@ -60,11 +93,11 @@ def Application(root):
     femaleOpt.grid(row=3, column=1, pady=0, padx=30, sticky=W)
 
     submitBtn = Button(frame2, text='Play PDF File', activeforeground='red', \
-        padx=60, pady=10, fg='white', bg='black', font=('Arial 12')) #command=speak_text)
+        padx=60, pady=10, fg='white', bg='black', font=('Arial 12'), command=speak_text)
     submitBtn.grid(row=4, column=0, pady=65)
 
     stopBtn = Button(frame2, text='Stop Playing', activeforeground='red', \
-        padx=60, pady=10, fg='white', bg='black', font=('Arial 12')) # command=stop_speaking
+        padx=60, pady=10, fg='white', bg='black', font=('Arial 12'), command=stop_speaking)
     stopBtn.grid(row=4, column=1, pady=65)
 
 
